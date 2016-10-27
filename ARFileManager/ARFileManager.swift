@@ -60,21 +60,55 @@ class ARFileManager: NSObject {
         do {
            attributes =  try FileManager.default.attributesOfItem(atPath: path)
         }
-        catch _ {
+        catch  {
             attributes = nil
+            throw error
         }
-        return attributes!
+        return attributes
     }
     
     
     class func attributeOfItem(atPath path: String,forKey key: String) throws -> Any? {
         var attriubute : Any? = nil;
         do {
-            attriubute = try attributesOfItem(atPath: path)?[key]
-        } catch _ {
+            attriubute = try attributesOfItem(atPath: key)
+        } catch {
             attriubute = nil
+            throw error
         }
-        return attriubute!
+        return attriubute
+    }
+    
+    class func createDirectory(atPath path: String) throws -> Bool? {
+        var result : Bool?
+        do {
+            try manager.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+            result = true
+        } catch {
+            result = nil
+            throw error
+        }
+        return result
+    }
+    
+    private class func directory(atPath path: NSString) -> String {
+        return path.deletingLastPathComponent
+    }
+    
+    private class func suffix(atPath path: NSString) -> String {
+        return path.pathExtension
+    }
+    
+    private class func fileName(atPath path: NSString,suffix: Bool) -> NSString {
+        var fileName : NSString = ""
+        if !suffix {
+            fileName = fileName.deletingLastPathComponent as NSString
+        }
+        return fileName
+    }
+    
+    private class func isExists(atPath path: String) -> Bool {
+        return manager.fileExists(atPath: path)
     }
 }
 
